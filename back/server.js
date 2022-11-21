@@ -1,4 +1,5 @@
 const http = require("http");
+const cookie = require('cookie-httponly');
 const app = require("./app");
 
 const normalizePort = (val) => {
@@ -36,7 +37,7 @@ const errorHandler = (error) => {
   }
 };
 
-const server = http.createServer(app);
+const server = http.createServer(app, cookie);
 
 server.on("error", errorHandler);
 server.on("listening", () => {

@@ -29,6 +29,9 @@ exports.modifySauce = (req, res, next) => {
   if (req.file) {
     Sauce.findOne({ _id: req.params.id })
       .then((sauce) => {
+        if (sauce.userId != req.auth.userId) {
+          res.status(401).json({ message: "non autorisé" });
+        } else {
         const filename = sauce.imageUrl.split("/images/")[1];
         fs.unlink(`images/${filename}`, () => {
           const sauceObject = {
@@ -44,6 +47,7 @@ exports.modifySauce = (req, res, next) => {
             .then(() => res.status(200).json({ message: "Sauce modifiée!" }))
             .catch((error) => res.status(400).json({ error }));
         });
+        }
       })
       .catch((error) => res.status(500).json({ error }));
   } else {
@@ -56,6 +60,7 @@ exports.modifySauce = (req, res, next) => {
       .catch((error) => res.status(400).json({ error }));
   }
 };
+
 
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
